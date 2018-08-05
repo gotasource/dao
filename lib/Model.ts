@@ -1,3 +1,5 @@
+import {Entity} from "./decorator";
+@Entity()
 export class Model {
     _id?: string;
     constructor(object: any){
