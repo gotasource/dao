@@ -6,7 +6,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
-	"prepublish": "gtc",
+    "prepublish": "gtc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -14,12 +14,13 @@
   "license": "MIT",
   "devDependencies": {
     "typescript": "^2.5.2",
-    "@types/node": "^9.4.6"
+    "@types/node": "^9.4.6",
+	"@types/mongodb": "^3.1.3",
   },
   "dependencies": {
-    "mongodb": "^3.1.0",
     "@gota/core": "latest",
     "@gota/injection": "latest",
+    "mongodb": "^3.1.0",
     "reflect-metadata": "^0.1.10"
   }
 }
