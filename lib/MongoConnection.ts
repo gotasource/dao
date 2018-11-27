@@ -1,12 +1,13 @@
- import {Server, Db, Collection, MongoClient, MongoClientOptions} from 'mongodb';
- import {Config} from '@gota/injection';
- import {PostInit} from '@gota/core';
+import {Server, Db, Collection, MongoClient, MongoClientOptions} from 'mongodb';
+import {Config} from '@gota/injection';
+import {PostInit} from '@gota/core';
+import { Connection } from './interface/Connection';
 
-function delay(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+// function delay(ms: number) {
+//     return new Promise(resolve => setTimeout(resolve, ms));
+// }
 
-class Connection {
+class MongoConnection implements Connection {
     @Config('database')
     private databaseConfig: any;
     private mongoClient: MongoClient;
@@ -15,7 +16,7 @@ class Connection {
     constructor(){}
     @PostInit
     protected async open():Promise<void>{
-        if(!Connection.db){
+        if(!MongoConnection.db){
              if(!this.databaseConfig){
                     let databaseFormat =
                     `
@@ -36,14 +37,14 @@ class Connection {
             let databaseName = this.databaseConfig.databaseName;
             let url = this.databaseConfig.url 
                 || `${this.databaseConfig.protocol}://${this.databaseConfig.user?this.databaseConfig.user+':':''}${this.databaseConfig.password?this.databaseConfig.password+'@':''}${this.databaseConfig.host}${this.databaseConfig.port?':'+this.databaseConfig.port:''}`;
-           
+            console.log("Create Connection to "+ url);
             try{
                 let mongoClientOptions: MongoClientOptions = {};
                 mongoClientOptions.useNewUrlParser = true;
                 mongoClientOptions = Object.assign(mongoClientOptions, this.databaseConfig.options);
 
                 this.mongoClient = await MongoClient.connect(url, mongoClientOptions);
-                Connection.db = this.mongoClient.db(databaseName);
+                MongoConnection.db = this.mongoClient.db(databaseName);
             }catch (err){
                 console.log("Create Connection is Failed.\nPlease check database config: \n" + JSON.stringify(this.databaseConfig, null, 4));
                 throw err;
@@ -58,7 +59,7 @@ class Connection {
         // }
         if(!this.collectionPool[collectionName]){
             try{
-                let collection:Collection = Connection.db.collection(collectionName);
+                let collection:Collection = await MongoConnection.db.collection(collectionName);
                 this.collectionPool[collectionName] = collection;
             }catch(err) {
                 console.log("createCollection is Failed: " + JSON.stringify(err, null, 4));
@@ -69,4 +70,4 @@ class Connection {
     }
 }
 
-export {Connection};
+export {MongoConnection};

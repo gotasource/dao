@@ -3,22 +3,31 @@
 //https://blogs.msdn.microsoft.com/typescript/2015/11/03/what-about-asyncawait/
 //https://github.com/Microsoft/TypeScript/issues/204
 
-import {Connection} from "./Connection";
+import {create} from "domain";
 import {Collection, ObjectId, Binary } from 'mongodb';
-import {Model} from "./Model";
+
 import {Autowired} from "@gota/injection";
 import {PostInit} from "@gota/core";
 
+import {MongoConnection} from "./MongoConnection";
+import {Model} from "./Model";
+import {isUndefined} from "util";
+
+import { DataAccess } from "./interface/DataAccess";
+
 //let CollectionsPool
-export class DAO<T extends Model> {
+export class MongoDataAccess<T extends Model> implements DataAccess<Model> {
     @Autowired
-    private connection: Connection;
+    private connection: MongoConnection;
     private collectionName: string;
     protected collection: Collection;
     constructor(clazz: Function) {
-        this.collectionName = clazz.name.replace(/[A-Z]/g, (match, offset, string) => {
-            return (offset ? '_' : '') + match.toLowerCase();
-        });
+        if(clazz){
+            this.collectionName = clazz.name.replace(/[A-Z]/g, (match, offset, string) => {
+                return (offset ? '_' : '') + match.toLowerCase();
+            });
+        }
+        
     }
 
     @PostInit
