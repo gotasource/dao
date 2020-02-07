@@ -67,7 +67,8 @@ export class MongoDataAccess<T extends Model> implements DataAccess<Model> {
         this.cleanNullValue(t);
         let result;
         try{
-            result = await collection.insertOne(t as any, {w:1});
+			// @ts-ignore
+            result = await collection.insertOne(t, {w:1});
         }catch (err){
             if(err.code = 11000 && err.message.includes(' index: _id_ dup key: {')){//E11000 duplicate key error
                 if(!isNaN(t._id as any)){
@@ -329,7 +330,8 @@ export class MongoDataAccess<T extends Model> implements DataAccess<Model> {
         })
         let result;
         try{
-            result = await collection.insertMany(array as Array<any>, {w:1});
+			// @ts-ignore
+            result = await collection.insertMany(array, {w:1});
         }catch (err){
             console.log('Creating Many is Fail: %s', JSON.stringify(err, null, 4));
             throw err;
