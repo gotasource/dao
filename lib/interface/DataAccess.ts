@@ -1,6 +1,6 @@
 
 //let CollectionsPool
-import {Model} from "../Model";
+import {Model} from '../Model';
 
 export interface DataAccess<T extends Model> {
 
@@ -47,9 +47,9 @@ export interface DataAccess<T extends Model> {
     /**
      * Create Many documents
      * @param  array documents will be created
-     * @returns  ids of created documents
+     * @returns  documents are included new properties
      */
-    createMany(array: Array<T>): Promise<Array<string>>;
+    createMany(array: Array<T>): Promise<Array<T>>;
 
     /**
      * Search documents
